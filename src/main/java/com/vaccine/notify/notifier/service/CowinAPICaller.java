@@ -1,6 +1,5 @@
 package com.vaccine.notify.notifier.service;
 
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -8,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -42,7 +42,7 @@ public class CowinAPICaller {
 		String date = getDate();
 		String URL=""+url;
 		URL = URL+"?pincode="+pinCode+"&date="+date;
-		logger.error("Calling : "+URL);
+		logger.info("Calling : "+URL);
 		HttpGet request = new HttpGet(URL);
 		request.addHeader("authority", "cdn-api.co-vin.in");
         request.addHeader("sec-ch-ua", "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"");
@@ -64,6 +64,8 @@ public class CowinAPICaller {
 			HttpEntity entity = response.getEntity();
 	        if (entity != null) {
                 
+	        	StatusLine sl = response.getStatusLine();  
+	        	logger.info("Status Code : "+sl.getStatusCode());
                 String result = EntityUtils.toString(entity);
                 Root root = objectMapper.readValue(result, Root.class);
                 for(int i = 0; i < root.centers.size(); i++){
@@ -76,6 +78,9 @@ public class CowinAPICaller {
                             v.setDate(session.getDate());
                             v.setCount(""+session.getAvailable_capacity());
                             v.setType(session.getVaccine());
+                            v.setAge(""+session.min_age_limit);
+                            v.setDose1(""+session.getAvailable_capacity_dose1());
+                            v.setDose2(""+session.getAvailable_capacity_dose2());
                             avalable.add(v);
                         }
                     }
@@ -86,6 +91,13 @@ public class CowinAPICaller {
 		}
 		catch (Exception e) {
 			logger.error(e.getMessage());
+		}
+		
+		if(avalable.size()>0) {
+			logger.info("Vaccine Slot Available");
+		}
+		else {
+			logger.info("Vaccine Slot Not Available");
 		}
 		
 		return avalable;
@@ -102,14 +114,15 @@ public class CowinAPICaller {
 		
 		String mailContent="";
 		for(Vaccine v:vList) {
-			mailContent=mailContent+"----------------------------------------------------------------\n";
-			mailContent=mailContent+v.getCenter()+"\n";
-			mailContent=mailContent+v.getDate()+"\n";
-			mailContent=mailContent+v.getType()+"\n";
-			mailContent=mailContent+v.getCount()+"\n";
-			mailContent=mailContent+"----------------------------------------------------------------\n";
+			mailContent=mailContent+"Center : "+v.getCenter()+"\n";
+			mailContent=mailContent+"Date    : "+v.getDate()+"\n";
+			mailContent=mailContent+"Type    : "+v.getType()+"\n";
+			mailContent=mailContent+"Dose1  : "+v.getDose1()+"\n";
+			mailContent=mailContent+"Dose2  : "+v.getDose2()+"\n";
+			mailContent=mailContent+"Age      : "+v.getAge()+"\n";
+			mailContent=mailContent+"---------------------------------------------\n";
 		}
-		
+		mailContent= "\n\n"+mailContent+"https://selfregistration.cowin.gov.in/";
 		return mailContent;
 	}
 }

@@ -6,6 +6,11 @@ public class Vaccine {
 	String date;
 	String count;
 	String type;
+	String age;
+	String dose1;
+	String dose2;
+	
+	
 	public Vaccine() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -33,5 +38,23 @@ public class Vaccine {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getAge() {
+		return age;
+	}
+	public void setAge(String age) {
+		this.age = age;
+	}
+	public String getDose1() {
+		return dose1;
+	}
+	public void setDose1(String dose1) {
+		this.dose1 = dose1;
+	}
+	public String getDose2() {
+		return dose2;
+	}
+	public void setDose2(String dose2) {
+		this.dose2 = dose2;
 	}
 }

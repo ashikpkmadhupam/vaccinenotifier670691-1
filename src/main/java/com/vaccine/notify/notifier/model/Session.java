@@ -11,6 +11,23 @@ public class Session {
     public List<String> slots;
 	public String session_id;
 	
+	public int available_capacity_dose1;
+	public int available_capacity_dose2;
+	
+	public int getAvailable_capacity_dose1() {
+		return available_capacity_dose1;
+	}
+	public void setAvailable_capacity_dose1(int available_capacity_dose1) {
+		this.available_capacity_dose1 = available_capacity_dose1;
+	}
+	
+	public int getAvailable_capacity_dose2() {
+		return available_capacity_dose2;
+	}
+	public void setAvailable_capacity_dose2(int available_capacity_dose2) {
+		this.available_capacity_dose2 = available_capacity_dose2;
+	}
+	
     public String getSession_id() {
 		return session_id;
 	}
