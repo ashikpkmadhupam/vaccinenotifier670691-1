@@ -33,6 +33,5 @@ public class SlotCheckScheduler {
 			String content = apiCaller.generateMail(result);
 			telegramBotService.sendTelegramMessage(content);
 		}
-		telegramBotService.sendTelegramMessage("Test from AWS");
 	}
 }
